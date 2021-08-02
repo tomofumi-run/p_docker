@@ -1,11 +1,17 @@
 FROM ruby:2.7
-# rubyの2.7系のイメージを使用
+# イメージにあるruby2.7系を参照
 
-RUN mkdir /var/www
-# コマンドの実行(mkdirを実行)
+WORKDIR /var/www
+# 作業する場所
 
-COPY main.rb /var/www
-# 上記の場所にmain.rbを置く
+COPY ./src /var/www
+# srcのデータを作業ファイルにコピーする
 
-CMD ["ruby", "/var/www/main.rb"]
-# main.rbを実行するコマンド
+RUN bundle config --local set path 'vendor/bundle'
+RUN bundle install
+
+CMD ["bundle", "exec", "ruby", "app.rb"]
+# dockerが起動した時に使えるようにする
+# rootユーザー
+
+# container内に入って、インストールやアプリの操作を行う

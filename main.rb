@@ -1,11 +1,14 @@
-require 'webrick' # ライブラリを使用
+require 'webrick'
 
-server = WEBrick::HTTPServer.new( # 変数serverに代入
-  DocumentRoot: './', # どこを参照するか このディレクトリ
-  BindAddres: '0.0.0.0', # IPアドレスを受け取る
+server = WEBrick::HTTPServer.new(
+  DocumentRoot: './', # このディレクトリ内を参照
+  BindAddress: '0.0.0.0',
   Port: 8000
 )
 
-server.mount_proc('/') do |req, res|
-  res.body = 'Hello World' # reqに返して、resを返す
+server.mount_proc('/') do |req, res| # リクエストに対するレスポンス
+  res.body = 'hello' # helloと表示させる
 end
+
+server.start
+# serverをスタート
