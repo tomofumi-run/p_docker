@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db: # mysqlを使用
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./src/db/mysql_data:/var/lib/mysql # ~data:がlocal /var~ がdocker ファイルを同期
+    environment:
+      MYSQL_ROOT_PASSWORD: password # 環境変数を設定 railsのdatabase.ymlに設定
+  web: # railsを使用
+    build: . # 同じディレクトリのdockerfileを参照
+    command: bundle exec rails s -p 3000 -b '0.0.0.0' # rails serverの立ち上げ
+    volumes:
+      - ./src:/app
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: development
+    depends_on:
+      - db # rails hostに接続先情報として設定する

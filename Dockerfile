@@ -1,17 +1,15 @@
 FROM ruby:2.7
-# イメージにあるruby2.7系を参照
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+  && apt-get update -qq \
+  && apt-get install -y nodejs yarn
+# node.js yarnをインストールする記述
 
-WORKDIR /var/www
-# 作業する場所
+WORKDIR /app
+# 作業ディレクトリ
 
-COPY ./src /var/www
-# srcのデータを作業ファイルにコピーする
+COPY ./src /app
 
-RUN bundle config --local set path 'vendor/bundle'
-RUN bundle install
-
-CMD ["bundle", "exec", "ruby", "app.rb"]
-# dockerが起動した時に使えるようにする
-# rootユーザー
-
-# container内に入って、インストールやアプリの操作を行う
+RUN bundle config --local set path 'vendor/bundle' \
+  && bundle install
+# ruby関連のライブラリをインストール
