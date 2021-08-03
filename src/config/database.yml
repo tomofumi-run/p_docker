@@ -27,7 +27,7 @@ development:
 test:
   <<: *default
   database: app_test
-  pool: <%= ENV.fetch("APP_DATABASE_HOST") { 'db' } %> # APP~があればhostとして使用。なければdb dbはdocker-composeを使用する
+  host: <%= ENV.fetch("APP_DATABASE_HOST") { 'db' } %> # APP~があればhostとして使用。なければdb dbはdocker-composeを使用する
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
