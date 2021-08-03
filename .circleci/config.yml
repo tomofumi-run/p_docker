@@ -1,0 +1,47 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.1.2
+  heroku: circleci/heroku@1.2.3
+
+jobs:
+  build: # bundle installを実行している
+    docker:
+      - image: circleci/ruby:2.7 # image使用
+    working_directory: ~/p_docker/src # リポジトリ 作業場所
+    steps:
+      - checkout:
+          path: ~/p_docker
+      - ruby/install-deps # bundle installの記法
+
+  test:
+    docker:
+      - image: circleci/ruby:2.7
+      - image: circleci/mysql:5.5
+        environment:
+          MYSQL_ROOT_PASSWORD: password # src/config/database.ymlに合わせている
+          MYSQL_DATABASE: app_test
+          MYSQL_USER: root
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      APP_DATABASE_HOST: "127.0.0.1" # 自分のPCという意味
+      RAILS_ENV: test
+    working_directory: ~/p_docker/src
+    steps: # 実行job
+      - checkout: # p_docker/src
+          path: ~/p_docker
+      - ruby/install-deps # bundle install
+      - run:
+          name: Database setup
+          command: bundle exec rails db:migrate # databse作成
+      - run:
+          name: test
+          command: bundle exec rake test # テスト実行
+workflows:
+  version: 2
+  build_test_and_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
