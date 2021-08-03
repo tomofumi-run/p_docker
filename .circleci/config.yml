@@ -71,4 +71,4 @@ workflows:
             - test
           filters:
             branches:
-              only:main # mainブランチに変更があった時だけ実行
+              only: main # mainブランチに変更があった時だけ実行
